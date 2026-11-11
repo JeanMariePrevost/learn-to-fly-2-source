@@ -4,6 +4,8 @@
 
 ActionScript 2 source for Learn to Fly 2 (2011), from the Flash project last saved in 2017, version 1.14. Most of the code was on the main timeline. The rest was on library symbol timelines, including frame scripts that set up button and movie clip behavior.
 
+This is an edited snapshot of the Flash source. We removed platform integrations and cleaned up the scripts that called them. The gameplay guides point to the retained mechanics and formulas.
+
 ## Mechanics
 
 The guides trace a flight from launch through gliding, boosting, and obstacle hits. They also cover the equipment stats and how scoring and progression vary by mode.
