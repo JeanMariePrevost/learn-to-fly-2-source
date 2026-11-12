@@ -4,7 +4,7 @@
 
 ActionScript 2 source for Learn to Fly 2 (2011), from the Flash project last saved in 2017, version 1.14. Most of the code was on the main timeline. The rest was on library symbol timelines, including frame scripts that set up button and movie clip behavior.
 
-This is an edited snapshot of the Flash source. We removed platform integrations and cleaned up the scripts that called them. The gameplay guides point to the retained mechanics and formulas.
+I used scripts, AI agents and some manual edits to remove platform integrations, clean up the scripts that called them, and put together the docs. The guides link to the code so you can check the details yourself.
 
 ## Mechanics
 
@@ -20,7 +20,7 @@ The guides trace a flight from launch through gliding, boosting, and obstacle hi
 
 ## What's here
 
-This release is for reading the source. The game lived inside a Flash project file, with its code spread over the frames of its timelines, and the original art and sound files aren't included.
+This release is for reading the source. I left out the Flash project file and the original art and sound.
 
 `scripts/` holds the exported game code:
 
@@ -31,8 +31,8 @@ Each block starts with a comment saying where it sits, for example `// ---- laye
 
 ## License
 
-The [LBG-NCNC License v1.0](LICENSE.md) covers Light Bringer Games' source code in this repository.
+This project is licensed under the [LBG-NCNC License v1.0](LICENSE.md).
 
-You can read, use, change, and share the code for noncommercial purposes, including by forking it on GitHub. When sharing, credit Light Bringer Games and keep the license and copyright notices. Get written permission before distributing or hosting a product based on the code that competes with or undercuts a Light Bringer Games product or service, even if it's free. The full license governs.
+**Short version:** Do whatever, but give credit, don’t make money from it, don’t compete with me, and don’t hurt my business. (See the license for the actual terms.)
 
 Light Bringer Games reserves its rights in the game's name, art, and sound. Third-party files have their own licenses.
