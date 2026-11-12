@@ -4,7 +4,7 @@
 
 ## Units and records
 
-One foot is 60 game pixels. Coordinates increase right and down. Angles are in degrees, with 0 facing right and −90 up. The displayed speed is the raw velocity magnitude in pixels per simulation frame.
+One foot is 60 game pixels. Coordinates increase right and down. Angles are in degrees, with 0 facing right and −90 up. The game records velocity magnitude in pixels per simulation frame, rounded up to one decimal place.
 
 | Stat | Calculation |
 | --- | --- |
@@ -35,7 +35,7 @@ Sleighs with positive jump power get one slide-meter jump per launch. The meter 
 `clamp(x, a, b)` restricts `x` to the range from `a` through `b`. Each frame:
 
 1. Compute speed from `vx, vy` and cap it at 2,500 before the other modifiers. With pitch `p`, apply the quadrant multiplier below.
-2. At displayed speed `s ≥ red_zone + 0.1`, multiply by `1 − red_drag × clamp((s − red_zone) / red_zone, 0, 5)`. Base `red_drag` is 0.05. Underwater, when accumulated gravity is positive and pitch is 1° through 90°, add `accumulated_gravity × pitch / 4500 × catch` to speed. Multiply speed and accumulated gravity by air retention, which starts at 0.9965.
+2. At the previous tick’s measured speed `s ≥ red_zone + 0.1`, multiply by `1 − red_drag × clamp((s − red_zone) / red_zone, 0, 5)`. Base `red_drag` is 0.05. Underwater, when accumulated gravity is positive and pitch is 1° through 90°, add `accumulated_gravity × pitch / 4500 × catch` to speed. Multiply speed and accumulated gravity by air retention, which starts at 0.9965.
 3. Turn the velocity angle toward the player's pitch by the glider's Control fraction, wrapping across ±180°. Recompute `vx, vy` from the new angle and speed.
 4. Set the lift gauge frame to `clamp(floor(400 × (speed − lift_start_speed) / (full_lift_speed − lift_start_speed)), 1, 400)`. The lift ratio is the gauge frame's height divided by 100. The export omits the gauge frames.
 5. Compute `lift = min_lift + (effective_max_lift − min_lift) × lift_ratio`. Effective max lift is capped at `0.999 × effective_gravity`. If accumulated gravity and lift ratio are positive, multiply accumulated gravity by `1 − lift_ratio / 50`. Then add `effective_gravity − lift` to it. Move by `vx` horizontally and `vy + accumulated_gravity` vertically.
@@ -61,9 +61,9 @@ A powered glider applies thrust at `pitch − 90°`. It uses full thrust while i
 
 ## Ground and water
 
-Ground contact uses a −7 px offset and adds the hitbox height when upside down. Crash power is `90 − min(abs(90 − direction), abs(−90 − direction))`. Crash strength records the greatest `speed × payload_hit_power × crash_power / 90`. Ground speed retains 0.985, with another factor of `1 − crash_power / 90` when crash power is above 10 and glide speed is above 25. Ground speed under 0.5 becomes zero. Otherwise subtract 0.3, with a floor of zero. The ground end timer counts down from 30 on zero-speed frames. [Landing](../scripts/Main%20timeline.as#L5090)
+Ground contact tests player Y minus 7 px against ground Y. For rotation outside −90° to 90°, it also subtracts the hitbox height from ground Y. Crash power is `90 − min(abs(90 − direction), abs(−90 − direction))`. Crash strength records the greatest `speed × payload_hit_power × crash_power / 90`. Ground speed retains 0.985, with another factor of `1 − crash_power / 90` when crash power is above 10 and glide speed is above 25. Ground speed under 0.5 becomes zero. Otherwise subtract 0.3, with a floor of zero. The ground end timer counts down from 30 while the recorded speed is zero. Any nonzero recorded speed resets it. [Landing](../scripts/Main%20timeline.as#L5090)
 
-The ground strip uses a cutoff of 500 ft in Classic and 1,200 ft in Story and Arcade. The water surface sits 60 px below ground. A fresh entry can bounce at speed ≥20 and reported direction from −15° through 17° if the 9-frame cooldown is clear. Bounce retains 0.85 of horizontal velocity and reverses vertical velocity with the same factor. The bounce check reads `REF_SPEED` and the stats update writes `REF_speed`. [Landscape](../scripts/Main%20timeline.as#L5805) · [Sea update](../scripts/Main%20timeline.as#L5189)
+The ground strip uses a cutoff of 500 ft in Classic and 1,200 ft in Story and Arcade. The water surface sits 60 px below ground. A fresh entry can bounce at speed ≥20 and reported direction from −15° through 17° if the 9-frame cooldown is clear. Bounce retains 0.85 of horizontal velocity and reverses vertical velocity with the same factor. It sets pitch to `−45 + 30 × (direction + 15) / 32` degrees and moves the player 3 px above the surface. The bounce check reads `REF_SPEED` and the stats update writes `REF_speed`. [Landscape](../scripts/Main%20timeline.as#L5805) · [Sea update](../scripts/Main%20timeline.as#L5189)
 
 Underwater, boost is disabled. The water step multiplies both velocity components and accumulated gravity by `0.9 × payload_water_retention` and subtracts `0.88 + glider_float` from accumulated gravity. If the last two reported vertical speeds differ by at most 0.001, the 40-count finish timer starts. Reaching the surface during the finish timer uses an extra count per frame. [Sea finish](../scripts/Main%20timeline.as#L5268)
 
